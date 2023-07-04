@@ -14,7 +14,7 @@ export default async function (hre: HardhatRuntimeEnvironment) {
 
   // Create deployer object and load the artifact of the contract you want to deploy.
   const deployer = new Deployer(hre, wallet);
-  const artifact = await deployer.loadArtifact("TestContract");
+  const artifact = await deployer.loadArtifact("OpenMint");
 
   // Estimate contract deployment fee
   const deploymentFee = await deployer.estimateDeployFee(artifact, []);
@@ -34,10 +34,10 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   const parsedFee = ethers.utils.formatEther(deploymentFee.toString());
   console.log(`The deployment is estimated to cost ${parsedFee} ETH`);
 
-  const testContract = await deployer.deploy(artifact, []);
+  const testContract = await deployer.deploy(artifact, [""]);
 
   //obtain the Constructor Arguments
-  console.log("constructor args:" + testContract.interface.encodeDeploy([]));
+  console.log("constructor args:" + testContract.interface.encodeDeploy([""]));
 
   // Show the contract info.
   const contractAddress = testContract.address;
@@ -46,11 +46,11 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   // Verify contract programmatically
   //
   // Contract MUST be fully qualified name (e.g. path/sourceName:contractName)
-  const contractFullyQualifedName = "contracts/zkSync.sol:TestContract";
+  const contractFullyQualifedName = "contracts/OpenMint.sol:OpenMint";
   const verificationId = await hre.run("verify:verify", {
     address: contractAddress,
     contract: contractFullyQualifedName,
-    constructorArguments: [],
+    constructorArguments: [""],
     bytecode: artifact.bytecode,
   });
   console.log(
