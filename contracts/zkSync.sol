@@ -13,9 +13,10 @@ contract TestContract {
   event Checked(bool isValid);
 
   address public adminWallet;
+  mapping (address => bool) public whitelistSigners;
 
   function setSigner(address _signer) public {
-    adminWallet = _signer;
+    whitelistSigners[_signer] = true;
   }
 
   function verify(address to, uint256 nonce, bytes memory signature) public pure returns (address) {
@@ -35,6 +36,9 @@ contract TestContract {
     emit ReceivedToAddress(to);
     emit RecoveredAddress(recoveredAddress);
     emit Checked(recoveredAddress == adminWallet);
+
+    require(whitelistSigners[recoveredAddress], "OpenMintZk: Invalid signer");
+
 
     return recoveredAddress;
   }
